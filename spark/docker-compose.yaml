@@ -1,0 +1,89 @@
+version: '3'
+services:
+  spark-master:
+    image: debian:bullseye-slim
+    container_name: spark-master
+    hostname: spark-master
+    command: /opt/spark/sbin/start-master.sh
+    environment:
+      - SPARK_NO_DAEMONIZE=true
+      - SPARK_HOME=/opt/spark
+      - JAVA_HOME=/opt/java
+    ports:
+      - '8080:8080'
+      - '7077:7077'
+      - '4040:4040'
+    volumes:
+      - ../init/downloads/spark-3.5.3-bin-hadoop3:/opt/spark
+      - ../init/downloads/jdk-17.0.2:/opt/java
+      - ./ivy:/root/.ivy2
+      - ./metastore:/metastore
+      - ./spark-warehouse:/spark-warehouse
+      - ../workspace:/workspace
+    networks:
+      private-cloud:
+  worker:
+    image: debian:bullseye-slim
+    command: /opt/spark/sbin/start-worker.sh spark://spark-master:7077
+    environment:
+      - SPARK_NO_DAEMONIZE=true
+      - SPARK_HOME=/opt/spark
+      - JAVA_HOME=/opt/java
+    ports:
+      - '8081'
+      - '4040'
+    volumes:
+      - ../init/downloads/spark-3.5.3-bin-hadoop3:/opt/spark
+      - ../init/downloads/jdk-17.0.2:/opt/java
+      - ./ivy:/root/.ivy2
+      - ./metastore:/metastore
+      - ./spark-warehouse:/spark-warehouse
+      - ../workspace:/workspace
+    deploy:
+      replicas: 2
+    networks:
+      private-cloud:
+  spark-thrift-server:
+    image: debian:bullseye-slim
+    container_name: spark-thrift-server
+    hostname: spark-thrift-server
+    command: /opt/spark/sbin/start-thriftserver.sh --master spark://spark-master:7077 --driver-java-options "-Dderby.system.home=/metastore" --conf "spark.cores.max=2"
+    environment:
+      - SPARK_NO_DAEMONIZE=true
+      - SPARK_HOME=/opt/spark
+      - JAVA_HOME=/opt/java
+    ports:
+      - '10000:10000'
+      - '4050:4040'
+    volumes:
+      - ../init/downloads/spark-3.5.3-bin-hadoop3:/opt/spark
+      - ../init/downloads/jdk-17.0.2:/opt/java
+      - ./ivy:/root/.ivy2
+      - ./metastore:/metastore
+      - ./spark-warehouse:/spark-warehouse
+    depends_on:
+      - spark-master
+    networks:
+      private-cloud:
+  spark-edge:
+    image: debian:bullseye-slim
+    container_name: spark-edge
+    hostname: spark-edge
+    environment:
+      - SPARK_HOME=/opt/spark
+      - JAVA_HOME=/opt/java
+    volumes:
+      - ../init/downloads/spark-3.5.3-bin-hadoop3:/opt/spark
+      - ../init/downloads/jdk-17.0.2:/opt/java
+      - ./ivy:/root/.ivy2
+      - ./metastore:/metastore
+      - ./spark-warehouse:/spark-warehouse
+      - ../workspace:/workspace
+    tty: true
+    networks:
+      private-cloud:
+
+networks:
+  private-cloud:
+    name: private-cloud
+    driver: bridge
