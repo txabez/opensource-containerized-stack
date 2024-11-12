@@ -1,0 +1,18 @@
+version: '3'
+services:
+  initializer:
+    image: debian:bullseye-slim
+    hostname: initializer
+    container_name: initializer
+    volumes:
+      - ./scripts:/scripts
+      - ./downloads:/downloads
+    command: bash /scripts/init.sh
+    working_dir: /scripts
+    networks:
+      private-cloud:
+
+networks:
+  private-cloud:
+    name: private-cloud
+    driver: bridge

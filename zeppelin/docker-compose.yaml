@@ -1,0 +1,32 @@
+version: '3'
+services:
+  zeppelin:
+    image: apache/zeppelin:0.11.2
+    container_name: zeppelin
+    user: root
+    ports:
+      - "8090:8080"
+      - "4060:4040"
+    environment:
+      - ZEPPELIN_IN_DOCKER=true
+      - ZEPPELIN_LOG_DIR=/logs
+      - ZEPPELIN_NOTEBOOK_DIR=/notebook
+      - SPARK_HOME=/opt/spark
+      - JAVA_HOME=/opt/java
+    volumes:
+      - ./logs:/logs
+      - ./notebook:/notebook
+      - ./interpreter-settings/spark.json:/opt/zeppelin/interpreter/spark/interpreter-setting.json
+      - ../init/downloads/spark-3.5.3-bin-hadoop3:/opt/spark
+      - ../init/downloads/jdk-17.0.2:/opt/java
+      - ../spark/ivy:/root/.ivy2
+      - ../spark/metastore:/metastore
+      - ../spark/spark-warehouse:/spark-warehouse
+      - ../workspace:/workspace
+    networks:
+      private-cloud:
+
+networks:
+  private-cloud:
+    name: private-cloud
+    driver: bridge

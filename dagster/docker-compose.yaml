@@ -1,0 +1,98 @@
+version: '3'
+services:
+  # This service runs the postgres DB used by dagster for run storage, schedule storage,
+  # and event log storage.
+  dagster-postgresql:
+    image: postgres:11
+    container_name: dagster-postgresql
+    hostname: dagster-postgresql
+    ports:
+      - "6432:5432"
+    environment:
+      POSTGRES_USER: "postgres_user"
+      POSTGRES_PASSWORD: "postgres_password"
+      POSTGRES_DB: "postgres_db"
+    networks:
+      - private-cloud
+  dagster-usercode:
+    image: dagster
+    container_name: dagster-usercode
+    hostname: dagster-usercode
+    environment:
+      POSTGRES_USER: "postgres_user"
+      POSTGRES_PASSWORD: "postgres_password"
+      POSTGRES_DB: "postgres_db"
+      SPARK_HOME: /opt/spark
+      JAVA_HOME: /opt/java
+    volumes: # Make docker client accessible so we can terminate containers from the webserver
+      - ./tmp/io_manager_storage:/tmp/io_manager_storage
+      - ./storage:/opt/dagster/dagster_home/storage
+      - ../init/downloads/jdk-17.0.2:/opt/java
+      - ../init/downloads/spark-3.5.3-bin-hadoop3:/opt/spark
+      - ../spark/metastore:/metastore
+      - ../spark/spark-warehouse:/spark-warehouse
+      - ../workspace:/workspace
+    command: "dagster api grpc -h 0.0.0.0 -p 4000 -f /workspace/app/my_jobs.py"
+    working_dir: /workspace
+    networks:
+      - private-cloud
+  # This service runs the dagster-webserver, which loads the user code from the user code container.
+  # Since our instance uses the QueuedRunCoordinator, any runs submitted from the webserver will be put on
+  # a queue and later dequeued and launched by dagster-daemon.
+  dagster-webserver:
+    image: dagster
+    entrypoint:
+      - dagster-webserver
+      - -h
+      - "0.0.0.0"
+      - -p
+      - "3000"
+      - -w
+      - workspace.yaml
+    container_name: dagster-webserver
+    hostname: dagster-webserver
+    expose:
+      - "3000"
+    ports:
+      - "3030:3000"
+    environment:
+      DAGSTER_POSTGRES_USER: "postgres_user"
+      DAGSTER_POSTGRES_PASSWORD: "postgres_password"
+      DAGSTER_POSTGRES_DB: "postgres_db"
+      SPARK_HOME: /opt/spark
+      JAVA_HOME: /opt/java
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./tmp/io_manager_storage:/tmp/io_manager_storage
+      - ./home:/opt/dagster/dagster_home
+    networks:
+      - private-cloud
+    depends_on:
+      - dagster-postgresql
+      - dagster-usercode
+  dagster-daemon:
+    image: dagster
+    entrypoint:
+      - dagster-daemon
+      - run
+    container_name: dagster-daemon
+    hostname: dagster-daemon
+    environment:
+      DAGSTER_POSTGRES_USER: "postgres_user"
+      DAGSTER_POSTGRES_PASSWORD: "postgres_password"
+      DAGSTER_POSTGRES_DB: "postgres_db"
+      SPARK_HOME: /opt/spark
+      JAVA_HOME: /opt/java
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./tmp/io_manager_storage:/tmp/io_manager_storage
+      - ./home:/opt/dagster/dagster_home
+    networks:
+      - private-cloud
+    depends_on:
+      - dagster-postgresql
+
+networks:
+  private-cloud:
+    driver: bridge
+    name: private-cloud
