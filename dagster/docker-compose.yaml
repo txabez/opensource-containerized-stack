@@ -32,7 +32,7 @@ services:
       - ../spark/metastore:/metastore
       - ../spark/spark-warehouse:/spark-warehouse
       - ../workspace:/workspace
-    command: "dagster api grpc -h 0.0.0.0 -p 4000 -f /workspace/app/my_jobs.py"
+    command: "dagster api grpc -h 0.0.0.0 -p 4000 -f /workspace/app/my_app.py"
     working_dir: /workspace
     networks:
       - private-cloud
