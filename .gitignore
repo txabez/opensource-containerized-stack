@@ -20,7 +20,15 @@
 /spark/metastore/
 /spark/spark-warehouse/
 
+/workspace/*
+!/workspace/app
+/workspace/app/__pycache__/
+!/workspace/jars
 /workspace/jars/*
+!/workspace/jars/.gitkeep
+!/workspace/logs
 /workspace/logs/*
+!/workspace/logs/.gitkeep
+!/workspace/log4j2.properties
 
 /zeppelin/logs/
