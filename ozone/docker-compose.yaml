@@ -76,6 +76,17 @@ services:
     command: ["ozone","s3g"]
     networks:
       private-cloud:
+  ozone-httpfs:
+    image: apache/ozone:1.4.0
+    container_name: ozone-httpfs
+    hostname: ozone-httpfs
+    ports:
+      - "14000:14000"
+    env_file:
+      - ./docker-config
+    command: ["ozone","httpfs"]
+    networks:
+      private-cloud:
 
 networks:
   private-cloud:
