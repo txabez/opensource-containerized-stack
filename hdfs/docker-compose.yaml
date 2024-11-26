@@ -1,0 +1,33 @@
+version: '3'
+services:
+  hdfs-namenode:
+    image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
+    container_name: hdfs-namenode
+    hostname: hdfs-namenode
+    ports:
+      - 9870:9870
+      - 9000:9000
+    environment:
+      - CLUSTER_NAME=hdfs-docker
+    env_file:
+      - ./hadoop.env
+    networks:
+      - private-cloud
+
+  datanode:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    ports:
+      - 9864
+    deploy:
+      replicas: 2
+    environment:
+      SERVICE_PRECONDITION: "hdfs-namenode:9870"
+    env_file:
+      - ./hadoop.env
+    networks:
+      - private-cloud
+
+networks:
+  private-cloud:
+    name: private-cloud
+    driver: bridge
