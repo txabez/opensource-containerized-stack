@@ -1,4 +1,7 @@
-version: '3'
+x-dagster-common:
+  &dagster-common
+  build: .
+
 services:
   # This service runs the postgres DB used by dagster for run storage, schedule storage,
   # and event log storage.
@@ -15,7 +18,7 @@ services:
     networks:
       - private-cloud
   dagster-usercode:
-    image: dagster
+    <<: *dagster-common
     container_name: dagster-usercode
     hostname: dagster-usercode
     environment:
@@ -40,7 +43,7 @@ services:
   # Since our instance uses the QueuedRunCoordinator, any runs submitted from the webserver will be put on
   # a queue and later dequeued and launched by dagster-daemon.
   dagster-webserver:
-    image: dagster
+    <<: *dagster-common
     entrypoint:
       - dagster-webserver
       - -h
@@ -71,7 +74,7 @@ services:
       - dagster-postgresql
       - dagster-usercode
   dagster-daemon:
-    image: dagster
+    <<: *dagster-common
     entrypoint:
       - dagster-daemon
       - run
