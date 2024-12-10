@@ -15,4 +15,4 @@ scrape_configs:
           - localhost
         labels:
           job: spark_logs
-          __path__: /workspace/logs/app.log
+          __path__: /workspace/logs/*.log

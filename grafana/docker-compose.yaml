@@ -1,7 +1,7 @@
 version: '3'
 services:
   grafana-dashboards:
-    image: grafana/grafana:11.3.0
+    image: grafana/grafana:11.4.0
     container_name: grafana-dashboards
     hostname: grafana-dashboards
     ports:
@@ -12,27 +12,76 @@ services:
     environment:
       - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-piechart-panel
       - GF_LOG_MODE=console file
+    depends_on:
+      - grafana-mimir
+      - grafana-loki
+      - grafana-tempo
     networks:
       private-cloud:
   grafana-loki:
-    image: grafana/loki:3.1.2
+    image: grafana/loki:3.2.2
+    command: --config.file=/etc/loki.yaml
     container_name: grafana-loki
     hostname: grafana-loki
     ports:
       - "3100:3100"
     volumes:
-      - ./config/loki.yaml:/mnt/config/local-config.yaml
-    command: -config.file=/mnt/config/local-config.yaml
+      - ./config/loki.yaml:/etc/loki.yaml
+    networks:
+      private-cloud:
+  grafana-tempo:
+    image: grafana/tempo:2.6.1
+    container_name: grafana-tempo
+    hostname: grafana-tempo
+    command: --config.file=/etc/tempo.yaml
+    ports:
+      - "3200:3200"
+    volumes:
+      - ./config/tempo.yaml:/etc/tempo.yaml
+    networks:
+      private-cloud:
+  grafana-mimir:
+    image: grafana/mimir:2.13.1
+    container_name: grafana-mimir
+    hostname: grafana-mimir
+    command: --config.file=/etc/mimir.yaml
+    ports:
+      - "9009:9009"
+    volumes:
+      - ./config/mimir.yaml:/etc/mimir.yaml
+      - ./data/mimir:/tmp/mimir
+    networks:
+      private-cloud:
+  grafana-alloy:
+    image: grafana/alloy:v1.5.1
+    container_name: grafana-alloy
+    hostname: grafana-alloy
+    command:
+      - run
+      - --storage.path=/var/lib/alloy/data
+      - --server.http.listen-addr=0.0.0.0:12345
+      - /etc/alloy.conf
+    ports:
+      - "12345:12345"
+      - "4317:4317"
+      - "4318:4318"
+    volumes:
+      - ./config/alloy.conf:/etc/alloy.conf
+      - ./data/alloy:/var/lib/alloy/data
+    depends_on:
+      - grafana-mimir
+      - grafana-loki
+      - grafana-tempo
     networks:
       private-cloud:
   grafana-promtail:
-    image: grafana/promtail:3.1.2
+    image: grafana/promtail:3.2.2
+    command: -config.file=/etc/promtail.yaml
     container_name: grafana-promtail
     hostname: grafana-promtail
     volumes:
+      - ./config/promtail.yaml:/etc/promtail.yaml
       - ../workspace/logs:/workspace/logs
-      - ./config/promtail.yaml:/mnt/config/config.yaml
-    command: -config.file=/mnt/config/config.yaml
     networks:
       private-cloud:
 
