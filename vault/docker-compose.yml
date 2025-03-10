@@ -1,0 +1,23 @@
+name: opensource-containerized-stack
+
+services:
+  vault:
+    image: hashicorp/vault:1.18.2
+    hostname: vault
+    container_name: vault
+    ports:
+      - "8200:8200"
+    cap_add:
+      - IPC_LOCK
+    volumes:
+      - ./data:/vault/file
+    environment:
+      - SINGLE_USER_CREDENTIALS_USERNAME=admin
+      - SINGLE_USER_CREDENTIALS_PASSWORD=ctsBtRBKHRAx69EqUghvvgEvjnaLjFEB
+    networks:
+      - private-cloud
+
+networks:
+  private-cloud:
+    name: private-cloud
+    driver: bridge
