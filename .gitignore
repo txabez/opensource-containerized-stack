@@ -20,6 +20,8 @@
 /spark/metastore/
 /spark/spark-warehouse/
 
+/vault/data/
+
 /workspace/*
 !/workspace/app
 /workspace/app/__pycache__/
