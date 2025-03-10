@@ -1,4 +1,5 @@
-version: '3'
+name: opensource-containerized-stack
+
 services:
   grafana-dashboards:
     image: grafana/grafana:11.4.0
@@ -17,7 +18,7 @@ services:
       - grafana-loki
       - grafana-tempo
     networks:
-      private-cloud:
+      - private-cloud
   grafana-loki:
     image: grafana/loki:3.2.2
     command: --config.file=/etc/loki.yaml
@@ -28,7 +29,7 @@ services:
     volumes:
       - ./config/loki.yaml:/etc/loki.yaml
     networks:
-      private-cloud:
+      - private-cloud
   grafana-tempo:
     image: grafana/tempo:2.6.1
     container_name: grafana-tempo
@@ -39,7 +40,7 @@ services:
     volumes:
       - ./config/tempo.yaml:/etc/tempo.yaml
     networks:
-      private-cloud:
+      - private-cloud
   grafana-mimir:
     image: grafana/mimir:2.13.1
     container_name: grafana-mimir
@@ -51,7 +52,7 @@ services:
       - ./config/mimir.yaml:/etc/mimir.yaml
       - ./data/mimir:/tmp/mimir
     networks:
-      private-cloud:
+      - private-cloud
   grafana-alloy:
     image: grafana/alloy:v1.5.1
     container_name: grafana-alloy
@@ -73,7 +74,7 @@ services:
       - grafana-loki
       - grafana-tempo
     networks:
-      private-cloud:
+      - private-cloud
   grafana-promtail:
     image: grafana/promtail:3.2.2
     command: -config.file=/etc/promtail.yaml
@@ -83,7 +84,7 @@ services:
       - ./config/promtail.yaml:/etc/promtail.yaml
       - ../workspace/logs:/workspace/logs
     networks:
-      private-cloud:
+      - private-cloud
 
 networks:
   private-cloud:

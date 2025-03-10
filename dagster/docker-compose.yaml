@@ -1,3 +1,5 @@
+name: opensource-containerized-stack
+
 x-dagster-common:
   &dagster-common
   build: .

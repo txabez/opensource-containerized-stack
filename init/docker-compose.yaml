@@ -1,4 +1,5 @@
-version: '3'
+name: opensource-containerized-stack
+
 services:
   initializer:
     image: debian:bullseye-slim
@@ -10,7 +11,7 @@ services:
     command: bash /scripts/init.sh
     working_dir: /scripts
     networks:
-      private-cloud:
+      - private-cloud
 
 networks:
   private-cloud:

@@ -1,4 +1,5 @@
-version: '3'
+name: opensource-containerized-stack
+
 services:
   marquez-api:
     image: marquezproject/marquez:0.50.0

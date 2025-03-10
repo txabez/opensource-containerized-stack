@@ -1,4 +1,5 @@
-version: '3'
+name: opensource-containerized-stack
+
 services:
   spark-master:
     image: debian:bullseye-slim
@@ -21,7 +22,7 @@ services:
       - ./spark-warehouse:/spark-warehouse
       - ../workspace:/workspace
     networks:
-      private-cloud:
+      - private-cloud
   worker:
     image: debian:bullseye-slim
     command: /opt/spark/sbin/start-worker.sh spark://spark-master:7077
@@ -42,7 +43,7 @@ services:
     deploy:
       replicas: 2
     networks:
-      private-cloud:
+      - private-cloud
   spark-thrift-server:
     image: debian:bullseye-slim
     container_name: spark-thrift-server
@@ -64,7 +65,7 @@ services:
     depends_on:
       - spark-master
     networks:
-      private-cloud:
+      - private-cloud
   spark-edge:
     image: debian:bullseye-slim
     container_name: spark-edge
@@ -81,7 +82,7 @@ services:
       - ../workspace:/workspace
     tty: true
     networks:
-      private-cloud:
+      - private-cloud
 
 networks:
   private-cloud:
