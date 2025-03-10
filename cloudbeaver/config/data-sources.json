@@ -1,0 +1,47 @@
+{
+	"folders": {},
+	"connections": {
+		"dagster": {
+			"provider": "postgresql",
+			"driver": "postgres-jdbc",
+			"name": "dagster",
+			"save-password": true,
+			"configuration": {
+				"host": "dagster-postgresql",
+				"port": "5432",
+				"user": "postgres_user",
+				"password": "postgres_password",
+				"database": "postgres_db",
+				"url": "jdbc:postgresql://dagster-postgresql:5432/postgres_db",
+				"configurationType": "MANUAL",
+				"type": "dev",
+				"closeIdleConnection": true,
+				"auth-model": "native",
+				"bootstrap": {
+					"autocommit": true
+				}
+			}
+		},
+		"marquez": {
+			"provider": "postgresql",
+			"driver": "postgres-jdbc",
+			"name": "marquez",
+			"save-password": true,
+			"configuration": {
+				"host": "marquez-db",
+				"port": "5432",
+				"user": "marquez",
+				"password": "marquez",
+				"database": "marquez",
+				"url": "jdbc:postgresql://marquez-db:5432/marquez",
+				"configurationType": "MANUAL",
+				"type": "dev",
+				"closeIdleConnection": true,
+				"auth-model": "native",
+				"bootstrap": {
+					"autocommit": true
+				}
+			}
+		}
+	}
+}

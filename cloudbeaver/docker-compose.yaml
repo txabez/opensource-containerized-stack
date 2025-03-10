@@ -1,0 +1,18 @@
+name: opensource-containerized-stack
+
+services:
+  cloudbeaver:
+    image: dbeaver/cloudbeaver:24.3.0
+    container_name: cloudbeaver
+    hostname: cloudbeaver
+    volumes:
+      - ./config/data-sources.json:/opt/cloudbeaver/workspace/GlobalConfiguration/.dbeaver/data-sources.json
+    ports:
+      - "8978:8978"
+    networks:
+      - private-cloud
+
+networks:
+  private-cloud:
+    driver: bridge
+    name: private-cloud
