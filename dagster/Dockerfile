@@ -12,6 +12,8 @@ RUN pip install \
     dagster-deltalake==0.26.4 \
     dagster-prometheus==0.26.4
 
+RUN apt-get update && apt-get install -y procps
+
 ENV DAGSTER_HOME=/opt/dagster/dagster_home/
 
 RUN mkdir -p $DAGSTER_HOME
