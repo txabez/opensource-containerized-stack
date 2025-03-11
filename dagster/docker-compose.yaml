@@ -3,6 +3,7 @@ name: opensource-containerized-stack
 x-dagster-common:
   &dagster-common
   build: .
+  image: dagster
 
 services:
   # This service runs the postgres DB used by dagster for run storage, schedule storage,
