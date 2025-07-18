@@ -2,7 +2,7 @@ name: opensource-containerized-stack
 
 services:
   grafana-dashboards:
-    image: grafana/grafana:11.4.0
+    image: grafana/grafana:12.0.2
     container_name: grafana-dashboards
     hostname: grafana-dashboards
     ports:
@@ -20,7 +20,7 @@ services:
     networks:
       - private-cloud
   grafana-loki:
-    image: grafana/loki:3.2.2
+    image: grafana/loki:3.5.2
     command: --config.file=/etc/loki.yaml
     container_name: grafana-loki
     hostname: grafana-loki
@@ -31,7 +31,7 @@ services:
     networks:
       - private-cloud
   grafana-tempo:
-    image: grafana/tempo:2.6.1
+    image: grafana/tempo:2.8.1
     container_name: grafana-tempo
     hostname: grafana-tempo
     command: -config.file=/etc/tempo.yaml
@@ -45,7 +45,7 @@ services:
     networks:
       - private-cloud
   grafana-mimir:
-    image: grafana/mimir:2.13.1
+    image: grafana/mimir:2.16.1
     container_name: grafana-mimir
     hostname: grafana-mimir
     command: -config.file=/etc/mimir.yaml
@@ -57,7 +57,7 @@ services:
     networks:
       - private-cloud
   grafana-alloy:
-    image: grafana/alloy:v1.5.1
+    image: grafana/alloy:v1.10.0
     container_name: grafana-alloy
     hostname: grafana-alloy
     command:
@@ -79,7 +79,7 @@ services:
     networks:
       - private-cloud
   grafana-promtail:
-    image: grafana/promtail:3.2.2
+    image: grafana/promtail:3.5.2
     command: -config.file=/etc/promtail.yaml
     container_name: grafana-promtail
     hostname: grafana-promtail

@@ -2,7 +2,7 @@ name: opensource-containerized-stack
 
 services:
   marquez-api:
-    image: marquezproject/marquez:0.50.0
+    image: marquezproject/marquez:0.51.1
     container_name: marquez-api
     hostname: marquez-api
     environment:
@@ -17,7 +17,7 @@ services:
     networks:
       - private-cloud
   marquez-web:
-    image: marquezproject/marquez-web:0.50.0
+    image: marquezproject/marquez-web:0.51.1
     container_name: marquez-web
     hostname: marquez-web
     environment:

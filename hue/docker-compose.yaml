@@ -2,7 +2,7 @@ name: opensource-containerized-stack
 
 services:
   hue:
-    image: gethue/hue
+    image: gethue/hue:latest
     hostname: hue
     container_name: hue
     user: root

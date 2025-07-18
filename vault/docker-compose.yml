@@ -2,7 +2,7 @@ name: opensource-containerized-stack
 
 services:
   vault:
-    image: hashicorp/vault:1.18.2
+    image: hashicorp/vault:1.20.0
     hostname: vault
     container_name: vault
     ports:

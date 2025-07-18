@@ -2,7 +2,7 @@ name: opensource-containerized-stack
 
 services:
   zeppelin:
-    image: apache/zeppelin:0.11.2
+    image: apache/zeppelin:0.12.0
     container_name: zeppelin
     user: root
     ports:

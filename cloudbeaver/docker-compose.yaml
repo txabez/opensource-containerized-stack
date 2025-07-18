@@ -2,11 +2,12 @@ name: opensource-containerized-stack
 
 services:
   cloudbeaver:
-    image: dbeaver/cloudbeaver:24.3.0
+    image: dbeaver/cloudbeaver:25.1.2
     container_name: cloudbeaver
     hostname: cloudbeaver
     volumes:
       - ./config/data-sources.json:/opt/cloudbeaver/workspace/GlobalConfiguration/.dbeaver/data-sources.json
+      # - ./drivers/hive:/opt/cloudbeaver/drivers/hive
     ports:
       - "8978:8978"
     networks:
